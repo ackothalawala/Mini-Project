@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 import styles from './styles';
 import { firebase } from '../../../firebase/config';
@@ -10,24 +10,44 @@ const handleSaveAcademicQualification = () => {
   
 }
 
+useEffect(() => {
+  // Fetch data
+  const currentUser = firebase.auth().currentUser;
+  if (currentUser) {
+    const userProfileRef = firebase.firestore().collection('UsersProfile').doc(currentUser.uid);
+    userProfileRef.get().then((doc) => {
+      if (doc.exists) {
+        const userData = doc.data();
+        if (userData.qualifications) {
+          setQualifications(userData.qualifications);
+        }
+      } else {
+        console.log('No such document!');
+      }
+    }).catch((error) => {
+      console.log('Error getting document:', error);
+    });
+  }
+}, []);
+
   const renderQualificationItem = ({ item, index }) => (
     <View style={styles.qualificationItem}>
       <TextInput
-        placeholder="Qualification Name"
+        placeholder={`Qualification Name (${item.name})`}
         placeholderTextColor="#000"
         style={styles.input}
         value={item.name}
         onChangeText={(text) => updateQualification(index, { ...item, name: text })}
       />
       <TextInput
-        placeholder="Duration"
+        placeholder={`Duration (${item.duration})`}
         placeholderTextColor="#000"
         style={styles.input}
         value={item.duration}
         onChangeText={(text) => updateQualification(index, { ...item, duration: text })}
       />
       <TextInput
-        placeholder="Institution"
+        placeholder={`Institution (${item.institution})`}
         placeholderTextColor="#000"
         style={styles.input}
         value={item.institution}
@@ -40,6 +60,8 @@ const handleSaveAcademicQualification = () => {
         <TouchableOpacity onPress={() => deleteQualification(index)}>
           <Text style={styles.deleteButton}>Delete</Text>
         </TouchableOpacity>
+        <View>
+        </View>
       </View>
     </View>
   );
@@ -74,8 +96,25 @@ const handleSaveAcademicQualification = () => {
 
   const deleteQualification = (index) => {
     const newQualifications = [...qualifications];
-    newQualifications.splice(index, 1);
+    const deletedQualification = newQualifications.splice(index, 1)[0];
     setQualifications(newQualifications);
+
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+        const userProfileRef = firebase.firestore().collection('UsersProfile').doc(currentUser.uid);
+        //remove 
+        userProfileRef.update({
+            qualifications: firebase.firestore.FieldValue.arrayRemove(deletedQualification)
+        }).then(() => {
+            Alert.alert('Success', 'Qualification deleted successfully');
+        }).catch(error => {
+            console.error('Error deleting qualification from Firestore:', error);
+            Alert.alert('Error', 'Failed to delete qualification. Please try again later.');
+            //if fail add deleted qualification to local.
+            setQualifications([...newQualifications, deletedQualification]);
+        });
+    }
+
   };
 
   return (

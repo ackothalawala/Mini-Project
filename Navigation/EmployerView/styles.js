@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
       marginLeft: 1,
     },
     jobCard: {
-      backgroundColor: '#123',
+      backgroundColor: '#fff',
       borderRadius: 8,
       padding: 16,
       marginRight: 16,
@@ -41,8 +41,15 @@ const styles = StyleSheet.create({
     jobTitle: {
       fontSize: 18,
       fontWeight: 'bold',
-      color:'#fff',
-      paddingBottom:25
+      color:'#000',
+      paddingBottom:25,
+      maxWidth:250
+    },
+    jobdetails:{
+      color:'#000'
+    },
+    NumApplicants:{
+      color:'#019F99'
     },
     seeMoreButton: {
       backgroundColor: '#fff', // Add your preferred background color

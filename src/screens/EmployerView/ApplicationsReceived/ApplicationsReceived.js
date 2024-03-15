@@ -8,8 +8,8 @@ const Tab = createMaterialTopTabNavigator();
 const Dashboard = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="OngoingApplications" component={OngoingApplications} />
-      <Tab.Screen name="ClosedApplications" component={ClosedApplications} />
+      <Tab.Screen name="Ongoing Applications" component={OngoingApplications} />
+      <Tab.Screen name="Closed Applications" component={ClosedApplications} />
     </Tab.Navigator>
   );
 };

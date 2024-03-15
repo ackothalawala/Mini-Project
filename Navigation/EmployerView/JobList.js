@@ -1,4 +1,3 @@
-// This block defines the OngoingApplications and ClosedApplications components
 import React from 'react';
 import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import styles from './styles'; // Import the provided styles
@@ -13,11 +12,10 @@ const ApplicationsReceived = ({ data }) => {
           <View style={styles.jobCard}>
             <View style={styles.titleContainer}>
               <Text style={styles.jobTitle}>{item.title}</Text>
-              <Text>{item.company}</Text>
-              <Text>{item.appliedDate}</Text>
+              <Text style={styles.jobdetails}>{item.appliedDate}</Text>
+              <Text style={styles.NumApplicants}>{item.applicants} Applicants</Text>
             </View>
-            {/* Move the Button outside the titleContainer */}
-            <Button title="See More" onPress={() => { /* handle See More button click */ }} />
+            <Button title="See Applicants" onPress={() => { /* handle See More button click */ }} />
           </View>
         </View>
       )}
@@ -27,7 +25,7 @@ const ApplicationsReceived = ({ data }) => {
 
 export const OngoingApplications = () => {
   const data = [
-    { id: '1', title: 'Job 1', company: 'Company A', appliedDate: '2022-01-01' },
+    { id: '1', title: 'Associate Software Engineer', company: 'Company A', appliedDate: '2022-01-01', applicants: 5 }, // Sample number of applicants
   ];
 
   return <ApplicationsReceived data={data} />;
@@ -35,7 +33,7 @@ export const OngoingApplications = () => {
 
 export const ClosedApplications = () => {
   const data = [
-    { id: '1', title: 'Job 2', company: 'Company B', appliedDate: '2022-01-02' },
+    { id: '1', title: 'Job 2', company: 'Company B', appliedDate: '2022-01-02', applicants: 10 }, // Sample number of applicants
   ];
 
   return <ApplicationsReceived data={data} />;

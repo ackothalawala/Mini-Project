@@ -1,8 +1,15 @@
 import React from 'react';
 import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import styles from './styles'; // Import the provided styles
+import { useNavigation } from '@react-navigation/native';
 
 const ApplicationsReceived = ({ data }) => {
+
+  const navigation = useNavigation();
+  const handleSeeApplicants = () => {
+    navigation.navigate('SeeApplicants');
+  }
+
   return (
     <FlatList
       data={data}
@@ -15,7 +22,7 @@ const ApplicationsReceived = ({ data }) => {
               <Text style={styles.jobdetails}>{item.appliedDate}</Text>
               <Text style={styles.NumApplicants}>{item.applicants} Applicants</Text>
             </View>
-            <Button title="See Applicants" onPress={() => { /* handle See More button click */ }} />
+            <Button title="See Applicants" onPress={handleSeeApplicants} />
           </View>
         </View>
       )}

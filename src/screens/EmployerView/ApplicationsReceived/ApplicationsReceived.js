@@ -5,7 +5,7 @@ import { OngoingApplications, ClosedApplications } from '../../../../Navigation/
 
 const Tab = createMaterialTopTabNavigator();
 
-const Dashboard = () => {
+const ApplicationsReceived = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Ongoing Applications" component={OngoingApplications} />
@@ -14,4 +14,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default ApplicationsReceived;

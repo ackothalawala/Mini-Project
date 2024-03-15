@@ -14,7 +14,6 @@ const EditUGProfile = ({ route }) => {
   const [address, setAddress] = useState('');
   const [university, setUniversity] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
-  const [experience, setExperience] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
 
   const navigation = useNavigation();
@@ -70,7 +69,6 @@ const EditUGProfile = ({ route }) => {
           setPhone(profileData.phone);
           setAddress(profileData.address);
           setUniversity(profileData.university);
-          setExperience(profileData.experience || []);
           setProfilePicture(profileData.profilePicture || null);
         }
       })
@@ -91,13 +89,13 @@ const EditUGProfile = ({ route }) => {
       const currentUser = firebase.auth().currentUser;
       if (currentUser) {
         const userProfileRef = firebase.firestore().collection('UsersProfile').doc(currentUser.uid);
-        const userData = { firstName, lastName, email, phone, address, university, experience, profilePicture };
+        const userData = { firstName, lastName, email, phone, address, university,profilePicture };
         await userProfileRef.set(userData, { merge: true });
         Alert.alert('Success', 'Profile updated successfully');
       } else {
         Alert.alert('Error', 'User not logged in');
       }
-      route.params.onSave({ firstName, lastName, email, phone, address, university, experience, profilePicture });
+      route.params.onSave({ firstName, lastName, email, phone, address, university, profilePicture });
       navigation.navigate('Profile');
     } else {
       Alert.alert('Error', 'Please fill all the required fields');

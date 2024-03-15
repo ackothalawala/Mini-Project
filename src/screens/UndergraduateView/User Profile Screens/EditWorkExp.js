@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 import styles from './styles';
 import { firebase } from '../../../firebase/config';
@@ -6,24 +6,44 @@ import { firebase } from '../../../firebase/config';
 const EditWorkExp = () => {
   const [experience, setExperience] = useState([{ name: '', duration: '', organization: '' }]);
 
+  useEffect(() => {
+    // Fetch data
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+      const userProfileRef = firebase.firestore().collection('UsersProfile').doc(currentUser.uid);
+      userProfileRef.get().then((doc) => {
+        if (doc.exists) {
+          const userData = doc.data();
+          if (userData.experience) {
+            setExperience(userData.experience);
+          }
+        } else {
+          console.log('No such document!');
+        }
+      }).catch((error) => {
+        console.log('Error getting document:', error);
+      });
+    }
+  }, []);
+
   const renderExperienceItem = ({ item, index }) => (
     <View style={styles.experienceItem}>
       <TextInput
-        placeholder="Experience Name"
+        placeholder={`Experience Name (${item.name})`}
         placeholderTextColor="#000"
         style={styles.input}
         value={item.name}
         onChangeText={(text) => updateExperience(index, { ...item, name: text })}
       />
       <TextInput
-        placeholder="Duration"
+        placeholder={`Duration (${item.duration})`}
         placeholderTextColor="#000"
         style={styles.input}
         value={item.duration}
         onChangeText={(text) => updateExperience(index, { ...item, duration: text })}
       />
       <TextInput
-        placeholder="Organization"
+        placeholder={`Organization (${item.organization})`}
         placeholderTextColor="#000"
         style={styles.input}
         value={item.organization}
@@ -76,9 +96,24 @@ const EditWorkExp = () => {
 
   const deleteExperience = (index) => {
     const newExperience = [...experience];
-    newExperience.splice(index, 1);
+    const deleteExperience = newExperience.splice(index, 1)[0];
     setExperience(newExperience);
+
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+      const userProfileRef = firebase.firestore().collection('UsersProfile').doc(currentUser.uid);
+      userProfileRef.update({
+        experience: firebase.firestore.FieldValue.arrayRemove(deleteExperience)
+      }).then(() => {
+        Alert.alert('Success', 'Experience delete successfully');
+      }).catch(error => {
+        console.error('Error deleting Experience from Firestore:', error)
+        Alert.alert('Error', 'Failed to delete Experience. Please try again later.');
+        setExperience([...newExperience, deleteExperience])
+      })
+
   };
+};
 
   return (
     <View style={styles.section}>
@@ -97,5 +132,6 @@ const EditWorkExp = () => {
     </View>
   );
 };
+
 
 export default EditWorkExp;

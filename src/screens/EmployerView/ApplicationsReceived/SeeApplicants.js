@@ -6,7 +6,6 @@ const ProfileListItem = ({ profile, onViewProfile }) => {
   return (
     <View style={styles.itemContainer}>
       <View style={styles.profileContainer}>
-        {/* Assuming profile.image is the URL/path to the profile picture */}
         <Image source={profile.image} style={styles.profileImage} />
         <Text style={styles.profileName}>{profile.name}</Text>
       </View>
